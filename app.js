@@ -341,7 +341,8 @@ function renderManual(main, items, title) {
   let toc = [];
   items.forEach((x, i) => {
     if (x.page !== undefined) return;
-    if (x.h !== undefined) { if (!x.h) return; const lvl = Math.min(4, (x.lvl || 2) + 1); const aid = 'm' + i; if (lvl <= 3) toc.push(`<a href="#${aid}" class="l${lvl}">${esc(x.h)}</a>`); h += `<h${lvl} id="${aid}">${fmt(x.h)}</h${lvl}>`; }
+    if (x.img) { h += `<figure><img src="${x.img}" loading="lazy" alt=""></figure>`; return; }
+    if (typeof x.h === 'string') { if (!x.h) return; const lvl = Math.min(4, (x.lvl || 2) + 1); const aid = 'm' + i; if (lvl <= 3) toc.push(`<a href="#${aid}" class="l${lvl}">${esc(x.h)}</a>`); h += `<h${lvl} id="${aid}">${fmt(x.h)}</h${lvl}>`; }
     else if (x.t !== undefined) h += `<p>${fmt(x.t)}</p>`;
     else if (x.table) h += `<table>${x.table.map((r, ri) => `<tr>${r.map((c) => (ri === 0 ? `<th>${fmt(String(c))}</th>` : `<td>${fmt(String(c))}</td>`)).join('')}</tr>`).join('')}</table>`;
     else if (x.img) h += `<figure><img src="${x.img}" loading="lazy" alt=""></figure>`;
