@@ -385,12 +385,13 @@ function renderJournal(main) {
   const hist = party.history.slice(-200).reverse();
   main.innerHTML = `<article class="manual"><h1>Diario y partida</h1>
     <div class="card"><h3>Partida</h3><p>Modo: ${party.mode === 'duo' ? 'dos jugadores' : 'solitario (' + PC_DATA[party.solo].name + ')'}${party.challenge ? ' · Modo Desafío' : ''}</p>
-      <div class="row"><button class="btn" id="exp">Exportar partida (.json)</button><label class="btn">Importar<input type="file" id="imp" accept=".json" hidden></label><button class="btn ghost" id="newgame">Nueva partida</button></div></div>
+      <div class="row"><button class="btn" id="exp">Exportar partida (.json)</button><label class="btn">Importar<input type="file" id="imp" accept=".json" hidden></label><button class="btn ghost" id="newgame">Nueva partida</button>${typeof idbPut === 'function' ? '<button class="btn ghost" id="repack">Cargar otra versión del contenido</button>' : ''}</div></div>
     <div class="card"><h3>Recorrido (${party.history.length} párrafos)</h3><div class="hist">${hist.map((id) => `<span class="pill">${id === 'START' ? 'Inicio' : labelOf(id).replace('·', '')} <small>${id.split(':')[0]}</small></span>`).join(' ')}</div></div>
     <div class="card"><h3>Registro</h3>${party.journal.slice().reverse().map((j) => `<div class="jl"><small>${esc(j.at)}</small> ${fmt(j.t)}</div>`).join('') || '<p class="muted">Sin entradas.</p>'}</div></article>`;
   $('#exp').onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(party, null, 1)], { type: 'application/json' })); a.download = 'duo-adventure-partida.json'; a.click(); };
   $('#imp').onchange = (e) => { const f = e.target.files[0]; if (!f) return; f.text().then((t) => { party = JSON.parse(t); save(); view = 'book'; render(); toast('Partida importada.'); }); };
   $('#newgame').onclick = () => { renderStart(); };
+  if ($('#repack')) $('#repack').onclick = async () => { await idbPut('pack', null); location.reload(); };
 }
 
 // ------- arranque -------
