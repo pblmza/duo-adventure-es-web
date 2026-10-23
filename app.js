@@ -363,7 +363,7 @@ function renderBestiary(main) {
 function renderSheets(main) {
   main.innerHTML = `<article class="manual"><h1>Fichas de personaje</h1>${['S', 'C'].map((k) => {
     const P = PC_DATA[k];
-    return `<div class="sheet card"><div class="sh-top"><img src="${P.portrait}" alt=""><div><h2>${P.icon} ${P.full}</h2><p class="subtitle">“${P.title}”</p>
+    return `<div class="sheet card"><div class="sh-top"><img src="${P.art}" alt=""><div><h2>${P.icon} ${P.full}</h2><p class="subtitle">“${P.title}”</p>
       <p>${P.race}, ${P.age} años · Nivel de aventurero ${P.level}</p>
       <p>${P.classes.map(([c, l]) => `${c} ${l}`).join(' · ')}</p></div></div>
       <table><tr>${Object.keys(P.abil).map((a) => `<th>${a}</th>`).join('')}</tr><tr>${Object.values(P.abil).map(([v, m]) => `<td>${v} <small>(+${m})</small></td>`).join('')}</tr></table>
