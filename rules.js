@@ -14,7 +14,7 @@ const POWER = {
 const PC_DATA = {
   S: {
     key: 'S', icon: '☀', name: 'Shyraes', full: 'Shyraes Sunkneck', title: 'Princesa del Sol Radiante',
-    portrait: 'img/avatar_S.jpg', art: 'img/i308.jpg', sheet: 'img/i310.jpg',
+    portrait: 'img/avatar_S.jpg', art: 'img/i308.jpg', face: [80, 95, 180], sheet: 'img/i310.jpg',
     race: 'Humana', age: 15, gender: 'Femenino', level: 4,
     classes: [['Guerrero', 4], ['Potenciador', 3], ['Jinete', 3]],
     abil: { Destreza: [13, 2], Agilidad: [12, 2], Fuerza: [18, 3], Vitalidad: [19, 3], Inteligencia: [14, 2], Espíritu: [15, 2] },
@@ -33,7 +33,7 @@ const PC_DATA = {
   },
   C: {
     key: 'C', icon: '☾', name: 'Clumen', full: 'Clumen Sunkneck', title: 'Príncipe de la Luna Brillante',
-    portrait: 'img/avatar_C.jpg', art: 'img/i312.jpg', sheet: 'img/i315.jpg',
+    portrait: 'img/avatar_C.jpg', art: 'img/i312.jpg', face: [85, 215, 220], sheet: 'img/i315.jpg',
     race: 'Humano', age: 15, gender: 'Masculino', level: 4,
     classes: [['Esgrimista', 4], ['Sacerdote (Kilhia)', 3], ['Sabio', 3]],
     abil: { Destreza: [12, 2], Agilidad: [14, 2], Fuerza: [15, 2], Vitalidad: [15, 2], Inteligencia: [19, 3], Espíritu: [18, 3] },

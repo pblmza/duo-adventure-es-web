@@ -278,6 +278,12 @@ function bindChecks(root, id) {
 }
 
 // ------- panel lateral del grupo -------
+const imgURL = (p) => (typeof IMG !== 'undefined' && IMG[p]) || p;
+// Retrato circular centrado en la cara, recortando la ilustración completa (no depende del paquete)
+function avatar(P, size = 46) {
+  const [x, y, w] = P.face, k = size / w;
+  return `<div class="av" style="width:${size}px;height:${size}px;background-image:url('${imgURL(P.art)}');background-size:${Math.round(356 * k)}px auto;background-position:${-Math.round(x * k)}px ${-Math.round(y * k)}px"></div>`;
+}
 function bar(v, m, cls) { return `<div class="bar ${cls}"><i style="width:${Math.max(0, Math.min(100, (v / m) * 100))}%"></i><span>${cls === 'hp' ? 'PV' : 'PM'} ${v}/${m}</span></div>`; }
 function renderSide() {
   const s = $('#side'); if (!party || !s) { if (s) s.innerHTML = ''; return; }
@@ -286,7 +292,7 @@ function renderSide() {
   for (const k of twins) {
     const P = PC_DATA[k], st = party.pcs[k];
     const passive = party.mode === 'solo' && party.solo !== k;
-    h += `<div class="pc ${st.dead ? 'dead' : ''} ${passive ? 'passive' : ''}"><div class="pn"><img src="${P.portrait}" alt=""><div><b>${P.icon} ${P.name}</b>${st.dead ? ' ☠' : ''}<br><small>${P.title}${passive ? ' · acompañante pasivo' : ''}</small></div></div>
+    h += `<div class="pc ${st.dead ? 'dead' : ''} ${passive ? 'passive' : ''}"><div class="pn">${avatar(P)}<div><b>${P.icon} ${P.name}</b>${st.dead ? ' ☠' : ''}<br><small>${P.title}${passive ? ' · acompañante pasivo' : ''}</small></div></div>
       <div class="adj">${bar(st.hp, P.hp, 'hp')}<button class="mini" data-adj="${k}|hp|-1">−</button><button class="mini" data-adj="${k}|hp|1">+</button></div>
       <div class="adj">${bar(st.mp, P.mp, 'mp')}<button class="mini" data-adj="${k}|mp|-1">−</button><button class="mini" data-adj="${k}|mp|1">+</button></div>
       <div class="sup">Apoyo <b>${party.support[k]}</b> <button class="mini" data-sup="${k}|-1">−</button><button class="mini" data-sup="${k}|1">+</button></div>
