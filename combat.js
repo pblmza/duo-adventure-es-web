@@ -371,10 +371,12 @@ async function enemyTurn(u) {
 // ---------- acciones de los PJ ----------
 function mpAvailable(u, useMako) {
   const st = party.pcs[u.key];
+  useMako = useMako || st.mako.length > 0;
   return u.mp + (useMako && st.mako.length ? Math.max(...st.mako) : 0);
 }
 function payMP(u, cost, useMako) {
   const st = party.pcs[u.key];
+  if (!useMako && u.mp < cost && st.mako.length) useMako = true; // faltan PM: se usa una piedra
   let fromStone = 0;
   if (useMako && st.mako.length) {
     let i = st.mako.indexOf(Math.max(...st.mako));
@@ -884,8 +886,15 @@ function renderActions() {
   } else if (T.moved) h += `<div class="grp"><span class="gl">Movimiento</span><span class="muted">${T.moved === 'normal' ? 'normal (sin magia este turno)' : T.moved === 'full' ? 'completo (sin acción principal, −4 Evasión)' : 'limitado'}</span></div>`;
   // menores
   if (u.key === 'S' && T.moved !== 'full') {
-    h += `<div class="grp"><span class="gl">Acciones menores</span>${Object.keys(TECHNIQUES).map((k) => `<button class="btn sm" data-tech="${k}" ${hasEff(u, k) ? 'disabled' : ''} title="${TECHNIQUES[k].desc}">${TECHNIQUES[k].name} (3 PM)</button>`).join('')}
-      ${u.stance === '1H' ? `<button class="btn sm" data-stance="1">Soltar el escudo y empuñar a dos manos</button>` : ''}${mk}</div>`;
+    const hasStone = st.mako.length > 0, best = hasStone ? Math.max(...st.mako) : 0;
+    h += `<div class="grp"><span class="gl">Acciones menores · técnicas (3 PM c/u)</span>${Object.keys(TECHNIQUES).map((k) => {
+      const on = hasEff(u, k);
+      return `<div class="techrow"><span title="${TECHNIQUES[k].desc}">${TECHNIQUES[k].name}</span>
+        <button class="btn sm" data-tech="${k}" data-src="mp" ${on || u.mp < 3 ? 'disabled' : ''}>Usar PM (${u.mp})</button>
+        <button class="btn sm stone" data-tech="${k}" data-src="mako" ${on || !hasStone || u.mp + best < 3 ? 'disabled' : ''}>⬡ Con Piedra Mako${hasStone ? ` (${best})` : ' (no quedan)'}</button>${on ? '<span class="muted sm">activa</span>' : ''}</div>`;
+    }).join('')}
+      ${u.stance === '1H' ? `<button class="btn sm" data-stance="1">Soltar el escudo y empuñar a dos manos</button>` : ''}
+      <div class="muted sm">Piedras Mako: ${hasStone ? st.mako.join(', ') + ' PM' : 'ninguna'}</div></div>`;
   }
   // principal
   if (!T.major && T.moved !== 'full') {
@@ -915,7 +924,7 @@ function renderActions() {
     rmEff(u, 'withdrawReady');
     log(`${u.icon} ${u.name} se mueve a ${AREA_NAME[u.area]}.`); renderCombat();
   }));
-  box.querySelectorAll('[data-tech]').forEach((b) => (b.onclick = () => { if (!T.moved) T.moved = null; useTechnique(u, b.dataset.tech, useM()); }));
+  box.querySelectorAll('[data-tech]').forEach((b) => (b.onclick = () => { useTechnique(u, b.dataset.tech, b.dataset.src === 'mako'); }));
   box.querySelectorAll('[data-stance]').forEach((b) => (b.onclick = () => { u.stance = '2H'; log(`☀ Shyraes arroja el escudo y empuña la espada a dos manos (Poder 27, Defensa −3).`); renderCombat(); }));
   box.querySelectorAll('[data-atk]').forEach((b) => (b.onclick = async () => {
     T.major = true; if (!T.moved) T.moved = 'limited';
